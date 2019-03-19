@@ -46,11 +46,21 @@ def _atlasreader_parser():
                              'delineation of clusters in provided statistical '
                              'map. Default: AAL, Desikan-Killiany & '
                              'Harvard-Oxford.')
-    parser.add_argument('-t', '--threshold', type=float, default=2,
+    parser.add_argument('-t', '--threshold', type=float, default=1.96,
                         dest='voxel_thresh', metavar='threshold',
                         help='Value threshold that voxels in provided file '
                              'must surpass in order to be considered in '
-                             'cluster extraction. Default: 2')
+                             'cluster extraction. Use `direction` to specify '
+                             'the directionallity of the threshold. If a '
+                             'negative number is provided a  percentile '
+                             'threshold is used instead, where the percentile '
+                             'is determined by the equation '
+                             '`100 - voxel_thresh`. Default: 1.96')
+    parser.add_argument('-x', '--direction', type=str, default='both',
+                        dest='direction', metavar='direction',
+                        help='Specifies the direction in which the threshold '
+                             'should be applied. Possible values are '
+                             '\'both\', \'pos\' or \'neg\'. Default: \'both\'')
     parser.add_argument('-p', '--probability', type=_check_limit, default=5,
                         dest='prob_thresh', metavar='threshold',
                         help='Threshold to consider when using a '
@@ -86,6 +96,7 @@ def atlasreader_main():
     create_output(opts.filename,
                   atlas=check_atlases(opts.atlas),
                   voxel_thresh=opts.voxel_thresh,
+                  direction=opts.direction,
                   cluster_extent=opts.cluster_extent,
                   prob_thresh=opts.prob_thresh,
                   outdir=opts.outdir,
